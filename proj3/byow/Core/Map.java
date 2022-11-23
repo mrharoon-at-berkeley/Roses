@@ -20,7 +20,7 @@ public class Map {
 
     static final TETile[][] world = new TETile[w][h];
 
-    public static void main(String[] args) {
+    public Map() {
 
         TERenderer ter = new TERenderer();
         ter.initialize(w, h);
@@ -151,7 +151,7 @@ public class Map {
         private int Y;
     }
 
-    private static void generateAvatar() {
+    private void generateAvatar() {
         /** Creates an avatar at a random valid location */
         int avatarX = RandomUtils.uniform(random, w);
         int avatarY = RandomUtils.uniform(random, h);
@@ -160,7 +160,7 @@ public class Map {
             avatarY = RandomUtils.uniform(random, h);
         }
         world[avatarX][avatarY] = Tileset.AVATAR;
-        Map.Avatar avatar = new Map().new Avatar();
+        Avatar avatar = new Avatar();
         avatar.X = avatarX;
         avatar.Y = avatarY;
     }
