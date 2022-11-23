@@ -2,8 +2,10 @@ package byow.Core;
 
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
+import edu.princeton.cs.introcs.StdDraw;
 
-import java.util.ArrayList;
+import java.awt.*;
+import java.io.File;
 
 public class Engine {
     TERenderer ter = new TERenderer();
@@ -22,22 +24,48 @@ public class Engine {
      */
 
     public void interactWithKeyboard() {
-        /* Suppose real game starting from menu. */
-        /* The player either loads, starts, or quits
-                for (int i = 0; i < input.length; i++) {
-                    if (input[i].toUpperCase() == 'N') {
-                        createNewGame(input.substring(i:));
-                    }
-                    if (input[i].upperCase() == 'L') {
-                        loadPreviousGame(input.substring(i:));
-                    }
-                    if (input[i].toUpperCase() == 'Q') {
-                        quit();
-                    }
-                }
-        *
-        * */
+        /** Called when user wants to use GUI menu and wants to
+         * explore the world using their keyboard.
+         */
+        drawMainMenu();
 
+    }
+
+    private void drawMainMenu() {
+        StdDraw.clear(Color.BLACK);
+        StdDraw.setPenColor(Color.WHITE);
+
+        Font fontLarge = new Font("Monaco", Font.BOLD, 30);
+        StdDraw.setFont(fontLarge);
+        StdDraw.text(WIDTH/2, HEIGHT/4, "CS61B: THE GAME");
+
+        Font fontSmall = new Font("Monaco", Font.PLAIN, 15);
+        StdDraw.setFont(fontSmall);
+        StdDraw.text(WIDTH / 2, HEIGHT / 2, "New Game (N)");
+        if (hasSavedFile()) {
+            StdDraw.text(WIDTH / 2, HEIGHT / 2 - 3, "Load Game (L)");
+        }
+        StdDraw.text(WIDTH / 2, HEIGHT / 2 - 6, "Quit (Q)");
+
+
+        StdDraw.show();
+        while (!StdDraw.hasNextKeyTyped()) {
+            StdDraw.pause(100);
+        }
+        if (StdDraw.hasNextKeyTyped()) {
+            userMenuCommand();
+        }
+    }
+
+    private void userMenuCommand() {
+        if (Character.toUpperCase(StdDraw.nextKeyTyped()) == 'N') {
+            
+        }
+    }
+
+    private boolean hasSavedFile() {
+        File temp = new File("saved_game.txt");
+        return temp.exists();
     }
 
     /* private _____ createNewGame(String restOfInput) {
@@ -115,6 +143,10 @@ public class Engine {
      * @return the 2D TETile[][] representing the state of the world
      */
     public TETile[][] interactWithInputString(String input) {
+        /** Called when a user gives the program a command
+         * line argument, describing how they want to generate
+         * the random world and what exploration they wish to complete.
+         */
         // TODO: Fill out this method so that it run the engine using the input
         // passed in as an argument, and return a 2D tile representation of the
         // world that would have been drawn if the same inputs had been given
