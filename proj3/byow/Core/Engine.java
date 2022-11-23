@@ -1,22 +1,22 @@
 package byow.Core;
 
-import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import edu.princeton.cs.introcs.StdDraw;
 
 import java.awt.*;
 import java.io.File;
-import java.util.Map;
 
 public class Engine {
-    TERenderer ter = new TERenderer();
     /* Feel free to change the width and height. */
-    public static final int WIDTH = 80;
-    public static final int HEIGHT = 30;
+    public static final int WIDTH = 70;
+    public static final int HEIGHT = 35;
     private boolean gameOver;
+    private Game game;
+    private long seed;
 
     public Engine() {
         gameOver = false;
+        game = new Game();
     }
 
     /**
@@ -61,17 +61,65 @@ public class Engine {
 
     private void userMenuCommand() {
         switch (Character.toUpperCase(StdDraw.nextKeyTyped())) {
-            case 'N': MapGenerator.main(null);
+            case 'N': createNewGame();
             case 'L': loadPreviousGame();
             case 'Q': System.exit(0);
-            case ':': if (Character.toUpperCase(StdDraw.nextKeyTyped()) == 'Q') {
+            case ':': while (!StdDraw.hasNextKeyTyped()) {
+                StdDraw.pause(100);
+            } if (StdDraw.hasNextKeyTyped() &&
+                    Character.toUpperCase(StdDraw.nextKeyTyped()) == 'Q') {
                 saveGame();
             }
         }
     }
 
+    private void createNewGame() {
+        drawSeedInputMenu("");
+        game = new Game(seed);
+        startGame();
+    }
+
+    private void startGame() {
+        while (!gameOver) {
+            //TODO: need Segej to help with his
+        }
+    }
+
+    private void drawSeedInputMenu(String seed) {
+        StdDraw.clear(Color.BLACK);
+        StdDraw.setPenColor(Color.WHITE);
+
+        Font fontLarge = new Font("Monaco", Font.BOLD, 30);
+        StdDraw.setFont(fontLarge);
+        StdDraw.text(WIDTH/2, HEIGHT/2, "PLEASE ENTER SEED:");
+
+        Font fontSmall = new Font("Monaco", Font.PLAIN, 20);
+        StdDraw.setFont(fontSmall);
+        StdDraw.text(WIDTH/2, HEIGHT/4, seed);
+
+        while (!StdDraw.hasNextKeyTyped()) {
+            StdDraw.pause(100);
+        }
+
+        char c = StdDraw.nextKeyTyped();
+
+        while (Character.toUpperCase(c) != 'S') {
+            seed += c;
+            helperDrawSeedInputMenu(seed);
+        }
+        this.seed = Long.parseLong(seed);
+        StdDraw.show();
+    }
+
+    private void helperDrawSeedInputMenu(String seed) {
+        Font fontSmall = new Font("Monaco", Font.PLAIN, 20);
+        StdDraw.setFont(fontSmall);
+        StdDraw.text(WIDTH/2, HEIGHT/4, seed);
+        StdDraw.show();
+    }
+
     private void saveGame() {
-        
+
     }
     private void loadPreviousGame() {
         File file = new File("saved_game.txt");
