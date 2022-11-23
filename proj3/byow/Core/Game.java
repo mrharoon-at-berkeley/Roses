@@ -4,6 +4,7 @@ public class Game {
     public static final int WIDTH = 70;
     public static final int HEIGHT = 35;
     private boolean gameOver;
+    private Map map;
     private long seed;
 
     public Game(long seed) {
@@ -11,7 +12,10 @@ public class Game {
         this.seed = seed;
     }
 
-    private void createNewGame() {}
-    private void saveGame() {}
-    private void loadPreviousGame() {}
+    public void createNewGame() {}
+    public void saveGame() {}
+    public void loadPreviousGame() {}
+    public void startGame() {
+        //TODO: waiting for segej to make player movement
+    }
 }

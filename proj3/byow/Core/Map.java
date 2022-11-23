@@ -10,7 +10,7 @@ import java.util.Random;
  *  the command line inputs, and lets the byow.Core.Engine class take over
  *  in either keyboard or input string mode.
  */
-public class MapGenerator {
+public class Map {
     static final int seed = 7; //just a random seed for testin'
     static final int w = 70; //j a decent width size
     static final int h = 35; //j a decent height size

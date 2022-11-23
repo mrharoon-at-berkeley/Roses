@@ -76,13 +76,7 @@ public class Engine {
     private void createNewGame() {
         drawSeedInputMenu("");
         game = new Game(seed);
-        startGame();
-    }
-
-    private void startGame() {
-        while (!gameOver) {
-            //TODO: need Segej to help with his
-        }
+        game.startGame();
     }
 
     private void drawSeedInputMenu(String seed) {
