@@ -6,6 +6,7 @@ import edu.princeton.cs.introcs.StdDraw;
 
 import java.awt.*;
 import java.io.File;
+import java.util.Map;
 
 public class Engine {
     TERenderer ter = new TERenderer();
@@ -28,6 +29,7 @@ public class Engine {
          * explore the world using their keyboard.
          */
         drawMainMenu();
+
 
     }
 
@@ -58,14 +60,27 @@ public class Engine {
     }
 
     private void userMenuCommand() {
-        if (Character.toUpperCase(StdDraw.nextKeyTyped()) == 'N') {
-            
+        switch (Character.toUpperCase(StdDraw.nextKeyTyped())) {
+            case 'N': MapGenerator.main(null);
+            case 'L': loadPreviousGame();
+            case 'Q': System.exit(0);
+            case ':': if (Character.toUpperCase(StdDraw.nextKeyTyped()) == 'Q') {
+                saveGame();
+            }
         }
     }
 
+    private void saveGame() {
+        
+    }
+    private void loadPreviousGame() {
+        File file = new File("saved_game.txt");
+        //TODO
+    }
+
     private boolean hasSavedFile() {
-        File temp = new File("saved_game.txt");
-        return temp.exists();
+        File file = new File("saved_game.txt");
+        return file.exists();
     }
 
     /* private _____ createNewGame(String restOfInput) {
