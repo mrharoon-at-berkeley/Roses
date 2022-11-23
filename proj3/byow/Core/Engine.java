@@ -113,7 +113,10 @@ public class Engine {
     }
 
     private void saveGame() {
-
+        make a new file;
+        take seed of game;
+        take location of avatar;
+        take
     }
     private void loadPreviousGame() {
         File file = new File("saved_game.txt");

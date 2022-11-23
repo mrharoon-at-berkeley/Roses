@@ -19,6 +19,7 @@ public class Map {
     static final Random random = new Random(seed);
 
     static final TETile[][] world = new TETile[w][h];
+    private int[] avatarLoc;
 
     public static void main(String[] args) {
 
@@ -141,7 +142,21 @@ public class Map {
             }
         }
 
+        generateAvatar();
+
         ter.renderFrame(world);
+    }
+
+    private  void generateAvatar() {
+        /** Creates an avatar at a random valid location */
+        int avatarX = RandomUtils.uniform(random, w);
+        int avatarY = RandomUtils.uniform(random, h);
+        while (world[avatarX][avatarY] != Tileset.FLOOR) {
+            avatarX = RandomUtils.uniform(random, w);
+            avatarY = RandomUtils.uniform(random, h);
+        }
+        world[avatarX][avatarY] = Tileset.AVATAR;
+        avatarLoc = new int[] {avatarX, avatarY};
     }
 
     private static int[] populate(int X, int Y, String D1, String D2, int D1L, int D2L) {
