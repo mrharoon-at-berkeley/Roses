@@ -1,31 +1,65 @@
 package byow.Core;
 
+import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 import edu.princeton.cs.introcs.StdDraw;
 
 import java.awt.*;
 
 public class Game {
-    public static final int WIDTH = 70;
-    public static final int HEIGHT = 35;
     private boolean gameOver;
     private Map map;
+    private String input;
     private long seed;
 
-    public Game(long seed) {
+    public Game() {
         /** This will create a new game */
-        this.seed = seed;
         map = new Map();
     }
 
-    public void createNewGame() {}
-    public void saveGame() {}
-    public void loadPreviousGame() {}
+    public void addGameInput(String s) {
+        input += s;
+    }
+    public String getGameInput() {
+        return input;
+    }
+
+    public void createNewGame() {
+    }
+
+    public void saveGame() {
+    }
+    public long getSeed() {
+        return seed;
+    }
+
+    public TETile getTile(int x, int y) {
+        return map.getTile(x, y);
+    }
+
+    public int getMapHeight() {
+        return map.getHeight();
+    }
+
+    public int getMapWidth() {
+        return map.getWidth();
+    }
+
+    public int avatarLocX() {
+        return map.avatarLocX();
+    }
+
+    public int avatarLocY() {
+        return map.avatarLocY();
+    }
+
     public void startGame() {
         //TODO: waiting for segej to make player movement
         drawHUD();
     }
+
     private void drawHUD() {
+        /*
         if (!gameOver) {
             Font fontSmall = new Font("Monaco", Font.PLAIN, 15);
             StdDraw.setFont(fontSmall);
@@ -38,5 +72,8 @@ public class Game {
     }
     private Tileset tileAtMouse() {
         return map.tileAt(StdDraw.mouseX(), StdDraw.mouseY());
+    }*/
+
+
     }
 }

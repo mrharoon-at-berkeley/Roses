@@ -12,8 +12,8 @@ import java.util.Random;
  */
 public class Map {
     static final int seed = 7; //just a random seed for testin'
-    static final int w = 70; //j a decent width size
-    static final int h = 35; //j a decent height size
+    public static final int w = 70; //j a decent width size
+    public static final int h = 35; //j a decent height size
     static final String[] directions = new String[]{"up", "down", "left", "right"}; //directions
 
     static final Random random = new Random(seed);
@@ -106,38 +106,37 @@ public class Map {
 
         for (int x = 1; x < w-1; x++) {
             for (int y = 1; y < h-1; y++) {
-                if(world[x][y] == Tileset.OUTSIDE) {
-                    if(world[x+1][y] == Tileset.INSIDE || world[x-1][y] == Tileset.INSIDE
-                            || world[x][y+1] == Tileset.INSIDE || world[x][y-1] == Tileset.INSIDE
-                            || world[x+1][y+1] == Tileset.INSIDE || world[x-1][y-1] == Tileset.INSIDE
-                            || world[x-1][y+1] == Tileset.INSIDE || world[x+1][y-1] == Tileset.INSIDE) {
+                if(world[x][y] == Tileset.NOTHING) {
+                    if(world[x+1][y] == Tileset.FLOOR || world[x-1][y] == Tileset.FLOOR
+                            || world[x][y+1] == Tileset.FLOOR || world[x][y-1] == Tileset.FLOOR
+                            || world[x+1][y+1] == Tileset.FLOOR || world[x-1][y-1] == Tileset.FLOOR
+                            || world[x-1][y+1] == Tileset.FLOOR || world[x+1][y-1] == Tileset.FLOOR) {
                         world[x][y] = Tileset.WALL;
-                        Tileset.
                     }
                 }
             }
         }
 
         for (int x = 1; x < w - 1; x++) {
-            if(world[x][1] == Tileset.INSIDE || world[x+1][1] == Tileset.INSIDE || world[x-1][1] == Tileset.INSIDE) {
+            if(world[x][1] == Tileset.FLOOR || world[x+1][1] == Tileset.FLOOR || world[x-1][1] == Tileset.FLOOR) {
                 world[x][0] = Tileset.WALL;
             }
         }
 
         for (int x = 1; x < w - 1; x++) {
-            if(world[x][h-2] == Tileset.INSIDE || world[x+1][h-2] == Tileset.INSIDE || world[x-1][h-2] == Tileset.INSIDE) {
+            if(world[x][h-2] == Tileset.FLOOR || world[x+1][h-2] == Tileset.FLOOR || world[x-1][h-2] == Tileset.FLOOR) {
                 world[x][h-1] = Tileset.WALL;
             }
         }
 
         for (int y = 1; y < h - 1; y++) {
-            if(world[1][y] == Tileset.INSIDE || world[1][y+1] == Tileset.INSIDE || world[1][y-1] == Tileset.INSIDE) {
+            if(world[1][y] == Tileset.FLOOR || world[1][y+1] == Tileset.FLOOR || world[1][y-1] == Tileset.FLOOR) {
                 world[0][y] = Tileset.WALL;
             }
         }
 
         for (int y = 1; y < h - 1; y++) {
-            if(world[w-2][y] == Tileset.INSIDE || world[w-2][y+1] == Tileset.INSIDE || world[w-2][y-1] == Tileset.INSIDE) {
+            if(world[w-2][y] == Tileset.FLOOR || world[w-2][y+1] == Tileset.FLOOR || world[w-2][y-1] == Tileset.FLOOR) {
                 world[w-1][y] = Tileset.WALL;
             }
         }
@@ -197,12 +196,29 @@ public class Map {
         }
     }
     // End of newly added work from Michael.
+    public int avatarLocX() {
+        return avatar.X;
+    }
+
+    public int avatarLocY() {
+        return avatar.Y;
+    }
+
+    public TETile getTile(int x, int y) {
+        return world[x][y];
+    }
+    public int getWidth() {
+        return w;
+    }
+    public int getHeight() {
+        return h;
+    }
 
     private static int[] populate(int X, int Y, String D1, String D2, int D1L, int D2L) {
         int initialX = X;
         int initialY = Y;
 
-        world[X][Y] = Tileset.INSIDE;
+        world[X][Y] = Tileset.FLOOR;
 
         switch (D1) {
             case "right" : {
@@ -211,7 +227,7 @@ public class Map {
                         initialX = reBound(X, Y);
                         X = reBound(X, Y);
                     }
-                    world[++X][Y] = Tileset.INSIDE;
+                    world[++X][Y] = Tileset.FLOOR;
 
                     System.out.println("D1 Right-- X position:" + X);
                 }
@@ -223,7 +239,7 @@ public class Map {
                         initialX = reBound(X, Y);
                         X = reBound(X, Y);
                     }
-                    world[--X][Y] = Tileset.INSIDE;
+                    world[--X][Y] = Tileset.FLOOR;
 
                     System.out.println("D1 Left-- X position:" + X);
                 }
@@ -235,7 +251,7 @@ public class Map {
                         initialY = reBound(X, Y);
                         Y = reBound(X, Y);
                     }
-                    world[X][++Y] = Tileset.INSIDE;
+                    world[X][++Y] = Tileset.FLOOR;
 
                     System.out.println("D1 Up-- Y position:" + Y);
                 }
@@ -247,7 +263,7 @@ public class Map {
                         initialY = reBound(X, Y);
                         Y = reBound(X, Y);
                     }
-                    world[X][--Y] = Tileset.INSIDE;
+                    world[X][--Y] = Tileset.FLOOR;
 
                     System.out.println("D1 Down-- Y position:" + Y);
                 }
@@ -261,21 +277,21 @@ public class Map {
                     if (reBound(X, Y) != 0) {
                         X = reBound(X, Y);
                     }
-                    world[++X][Y] = Tileset.INSIDE;
+                    world[++X][Y] = Tileset.FLOOR;
 
                     System.out.println("D2 Right-- X position:" + X);
                 }
                 if (initialY < Y) {
                     for (int x = X; x >= initialX; x--) {
                         for (int y = Y; y >= initialY; y--) {
-                            world[x][y] = Tileset.INSIDE;
+                            world[x][y] = Tileset.FLOOR;
                         }
                     }
                 }
                 if (initialY > Y) {
                     for (int x = X; x >= initialX; x--) {
                         for (int y = Y; y <= initialY; y++) {
-                            world[x][y] = Tileset.INSIDE;
+                            world[x][y] = Tileset.FLOOR;
                         }
                     }
                 }
@@ -287,21 +303,21 @@ public class Map {
                     if (reBound(X, Y) != 0) {
                         X = reBound(X, Y);
                     }
-                    world[--X][Y] = Tileset.INSIDE;
+                    world[--X][Y] = Tileset.FLOOR;
 
                     System.out.println("D2 Left-- X position:" + X);
                 }
                 if (initialY < Y) {
                     for (int x = X; x <= initialX; x++) {
                         for (int y = Y; y >= initialY; y--) {
-                            world[x][y] = Tileset.INSIDE;
+                            world[x][y] = Tileset.FLOOR;
                         }
                     }
                 }
                 if (initialY > Y) {
                     for (int x = X; x <= initialX; x++) {
                         for (int y = Y; y <= initialY; y++) {
-                            world[x][y] = Tileset.INSIDE;
+                            world[x][y] = Tileset.FLOOR;
                         }
                     }
                 }
@@ -313,21 +329,21 @@ public class Map {
                     if (reBound(X, Y) != 0) {
                         Y = reBound(X, Y);
                     }
-                    world[X][++Y] = Tileset.INSIDE;
+                    world[X][++Y] = Tileset.FLOOR;
 
                     System.out.println("D2 Up-- Y position:" + Y);
                 }
                 if (initialX < X) {
                     for (int y = Y; y >= initialY; y--) {
                         for (int x = X; x >= initialX; x--) {
-                            world[x][y] = Tileset.INSIDE;
+                            world[x][y] = Tileset.FLOOR;
                         }
                     }
                 }
                 if (initialX > X) {
                     for (int y = Y; y >= initialY; y--) {
                         for (int x = X; x <= initialX; x++) {
-                            world[x][y] = Tileset.INSIDE;
+                            world[x][y] = Tileset.FLOOR;
                         }
                     }
                 }
@@ -338,21 +354,21 @@ public class Map {
                     if (reBound(X, Y) != 0) {
                         Y = reBound(X, Y);
                     }
-                    world[X][--Y] = Tileset.INSIDE;
+                    world[X][--Y] = Tileset.FLOOR;
 
                     System.out.println("D2 Down-- Y position:" + Y);
                 }
                 if (initialX < X) {
                     for (int y = Y; y >= initialY; y--) {
                         for (int x = X; x <= initialX; x++) {
-                            world[x][y] = Tileset.INSIDE;
+                            world[x][y] = Tileset.FLOOR;
                         }
                     }
                 }
                 if (initialX > X) {
                     for (int y = Y; y >= initialY; y--) {
                         for (int x = X; x >= initialX; x--) {
-                            world[x][y] = Tileset.INSIDE;
+                            world[x][y] = Tileset.FLOOR;
                         }
                     }
                 }
@@ -366,25 +382,25 @@ public class Map {
     private static int reBound(int X, int Y) {
         if(X > w-2) {
             for (int i = 0; i < 11; i++) {
-                world[X--][Y] = Tileset.INSIDE;
+                world[X--][Y] = Tileset.FLOOR;
             }
             System.out.println("rebounded a high X");
             return w - 2 - 11;
         } else if (X < 2) {
             for (int i = 0; i < 11; i++) {
-                world[X++][Y] = Tileset.INSIDE;
+                world[X++][Y] = Tileset.FLOOR;
             }
             System.out.println("rebounded a low X");
             return 2 + 4;
         } else if (Y > h-2) {
             for (int i = 0; i < 11; i++) {
-                world[X][Y--] = Tileset.INSIDE;
+                world[X][Y--] = Tileset.FLOOR;
             }
             System.out.println("rebounded a high Y");
             return h - 2 - 11;
         } else if (Y < 2) {
             for (int i = 0; i < 11; i++) {
-                world[X][++Y] = Tileset.INSIDE;
+                world[X][++Y] = Tileset.FLOOR;
             }
 
             System.out.println("rebounded a low Y");

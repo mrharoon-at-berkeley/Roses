@@ -1,24 +1,21 @@
 package byow.Core;
 
 import byow.TileEngine.TETile;
+import byow.TileEngine.Tileset;
 import edu.princeton.cs.introcs.StdDraw;
+import org.eclipse.jetty.util.IO;
 
 import java.awt.*;
-import java.io.File;
+import java.io.*;
+import java.util.Scanner;
 
 public class Engine {
     /* Feel free to change the width and height. */
     public static final int WIDTH = 70;
     public static final int HEIGHT = 35;
-    private boolean gameOver;
     private Game game;
-    private long seed;
-
-    public Engine() {
-        gameOver = false;
-        game = new Game();
-    }
-
+    private String input;
+    private boolean gameStarted;
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
      * including inputs from the main menu.
@@ -39,7 +36,7 @@ public class Engine {
 
         Font fontLarge = new Font("Monaco", Font.BOLD, 30);
         StdDraw.setFont(fontLarge);
-        StdDraw.text(WIDTH/2, HEIGHT/4, "CS61B: THE GAME");
+        StdDraw.text(WIDTH / 2, HEIGHT / 4, "CS61B: THE GAME");
 
         Font fontSmall = new Font("Monaco", Font.PLAIN, 15);
         StdDraw.setFont(fontSmall);
@@ -61,21 +58,34 @@ public class Engine {
 
     private void userMenuCommand() {
         switch (Character.toUpperCase(StdDraw.nextKeyTyped())) {
-            case 'N': createNewGame();
-            case 'L': loadPreviousGame();
-            case 'Q': System.exit(0);
-            case ':': while (!StdDraw.hasNextKeyTyped()) {
-                StdDraw.pause(100);
-            } if (StdDraw.hasNextKeyTyped() &&
-                    Character.toUpperCase(StdDraw.nextKeyTyped()) == 'Q') {
-                saveGame();
-            }
+            case 'N':
+                createNewGame();
+                game.addGameInput("N");
+                break;
+            case 'L':
+                loadPreviousGame();
+                // after
+                break;
+            case 'Q':
+                System.exit(0);
+                break; // just in case
+            case ':':
+                if (gameStarted) {
+                    while (!StdDraw.hasNextKeyTyped()) {
+                        StdDraw.pause(100);
+                    }
+                    if (StdDraw.hasNextKeyTyped() &&
+                            Character.toUpperCase(StdDraw.nextKeyTyped()) == 'Q') {
+                        saveGame();
+                    }
+                }
+                break;
         }
     }
 
     private void createNewGame() {
         drawSeedInputMenu("");
-        game = new Game(seed);
+        game = new Game();
         game.startGame();
     }
 
@@ -85,11 +95,11 @@ public class Engine {
 
         Font fontLarge = new Font("Monaco", Font.BOLD, 30);
         StdDraw.setFont(fontLarge);
-        StdDraw.text(WIDTH/2, HEIGHT/2, "PLEASE ENTER SEED:");
+        StdDraw.text(WIDTH / 2, HEIGHT / 2, "PLEASE ENTER SEED:");
 
         Font fontSmall = new Font("Monaco", Font.PLAIN, 20);
         StdDraw.setFont(fontSmall);
-        StdDraw.text(WIDTH/2, HEIGHT/4, seed);
+        StdDraw.text(WIDTH / 2, HEIGHT / 4, seed);
 
         while (!StdDraw.hasNextKeyTyped()) {
             StdDraw.pause(100);
@@ -108,22 +118,56 @@ public class Engine {
     private void helperDrawSeedInputMenu(String seed) {
         Font fontSmall = new Font("Monaco", Font.PLAIN, 20);
         StdDraw.setFont(fontSmall);
-        StdDraw.text(WIDTH/2, HEIGHT/4, seed);
+        StdDraw.text(WIDTH / 2, HEIGHT / 4, seed);
         StdDraw.show();
     }
 
-    private void saveGame() {
-        make a new file;
-        take seed of game;
-        take location of avatar;
-        take
+    private void writeFile(File file) {
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            writer.write(game.getGameInput());
+            writer.close();
+            } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
+
+    private void saveGame() {
+        //TODO: add saved data on encounters
+        try {
+            File file = new File("saved_game.txt");
+            if (file.createNewFile()) {
+                writeFile(file);
+            } else {
+                if (file.delete()) {
+                    saveGame();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void loadPreviousGame() {
-        File file = new File("saved_game.txt");
-        //TODO
+        //TODO: use interactWithStringInput to save time
+        try {
+            File file = new File("saved_game.txt");
+
+            if (file.exists()) {
+                Scanner scanner = new Scanner(file);
+                String input = scanner.nextLine();
+                TETile[][] map = interactWithInputString(input); // returns TETile[][]
+                game.loadMap(map);
+            } else {
+                System.exit(0);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean hasSavedFile() {
+        //TODO: use interactWithStringInput to save time
         File file = new File("saved_game.txt");
         return file.exists();
     }
@@ -214,26 +258,9 @@ public class Engine {
         //
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
+        // TODO: should NOT render tiles
 
-//        TETile[][] finalWorldFrame = null;
-//        return finalWorldFrame;
-
-        /* Suppose real game starting from menu. */
-        /* The player either loads, starts, or quits
-                for (int i = 0; i < input.length; i++) {
-                    if (input[i].toUpperCase() == 'N') {
-                        createNewGame(input.substring(i:));
-                    }
-                    if (input[i].upperCase() == 'L') {
-                        loadPreviousGame(input.substring(i:));
-                    }
-                    if (input[i].toUpperCase() == 'Q') {
-                        quit();
-                    }
-                }
-        *
-        * */
-
+        return null;
     }
 
     /* private _____ createNewGame(String restOfInput) {
