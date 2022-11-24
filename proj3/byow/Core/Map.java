@@ -152,6 +152,8 @@ public class Map {
         private int Y;
     }
 
+
+    //  Newly added work by Michael
     private void generateAvatar() {
         /** Creates an avatar at a random valid location */
         int avatarX = RandomUtils.uniform(random, w);
@@ -194,6 +196,7 @@ public class Map {
             world[avatar.X][avatar.Y] = Tileset.AVATAR;
         }
     }
+    // End of newly added work from Michael.
 
     private static int[] populate(int X, int Y, String D1, String D2, int D1L, int D2L) {
         int initialX = X;
