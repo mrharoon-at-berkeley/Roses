@@ -19,6 +19,7 @@ public class Map {
     static final Random random = new Random(seed);
 
     static final TETile[][] world = new TETile[w][h];
+    private Avatar avatar;
 
     public Map() {
 
@@ -160,13 +161,38 @@ public class Map {
             avatarY = RandomUtils.uniform(random, h);
         }
         world[avatarX][avatarY] = Tileset.AVATAR;
-        Avatar avatar = new Avatar();
+        avatar = new Avatar();
         avatar.X = avatarX;
         avatar.Y = avatarY;
     }
 
-    private static void moveAvatar() {
-        //TODO
+    public void moveAvatarRight() {
+        if (world[avatar.X+1][avatar.Y] == Tileset.FLOOR) {
+            world[avatar.X][avatar.Y] = Tileset.FLOOR;
+            avatar.X += 1;
+            world[avatar.X][avatar.Y] = Tileset.AVATAR;
+        }
+    }
+    public void moveAvatarLeft() {
+        if (world[avatar.X-1][avatar.Y] == Tileset.FLOOR) {
+            world[avatar.X][avatar.Y] = Tileset.FLOOR;
+            avatar.X -= 1;
+            world[avatar.X][avatar.Y] = Tileset.AVATAR;
+        }
+    }
+    public void moveAvatarUp() {
+        if (world[avatar.X][avatar.Y+1] == Tileset.FLOOR) {
+            world[avatar.X][avatar.Y] = Tileset.FLOOR;
+            avatar.Y += 1;
+            world[avatar.X][avatar.Y] = Tileset.AVATAR;
+        }
+    }
+    public void moveAvatarDown() {
+        if (world[avatar.X][avatar.Y-1] == Tileset.FLOOR) {
+            world[avatar.X][avatar.Y] = Tileset.FLOOR;
+            avatar.Y -= 1;
+            world[avatar.X][avatar.Y] = Tileset.AVATAR;
+        }
     }
 
     private static int[] populate(int X, int Y, String D1, String D2, int D1L, int D2L) {
