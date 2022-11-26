@@ -3,7 +3,9 @@ package byow.Core;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
+import edu.princeton.cs.introcs.StdDraw;
 
+import java.awt.*;
 import java.util.Random;
 
 /** This is the main entry point for the program. This class simply parses
@@ -18,10 +20,11 @@ public class Map {
     private Random random;
     private long seed;
 
-    static final TETile[][] world = new TETile[w][h];
+    private static TETile[][] world = new TETile[w][h];
     private Avatar avatar;
     private TERenderer ter;
     private boolean render;
+
 
     public Map(long seed, boolean render) {
         this.seed = seed;
@@ -120,8 +123,15 @@ public class Map {
         generateAvatar();
 
         if (render) {
+
             ter.renderFrame(world);
         }
+    }
+
+    public void render() {
+        ter.renderFrame(world);
+        drawHUD();
+        render = true;
     }
 
     private class Avatar {
@@ -130,7 +140,6 @@ public class Map {
     }
 
 
-    //  Newly added work by Michael
     private void generateAvatar() {
         /** Creates an avatar at a random valid location */
         int avatarColumn = RandomUtils.uniform(random, w);
@@ -150,7 +159,10 @@ public class Map {
             world[avatar.column][avatar.row] = Tileset.FLOOR;
             avatar.column += 1;
             world[avatar.column][avatar.row] = Tileset.AVATAR;
-            ter.renderFrame(world);
+            if (render) {
+                ter.renderFrame(world);
+                drawHUD();
+            }
         }
     }
     public void moveAvatarLeft() {
@@ -158,8 +170,10 @@ public class Map {
             world[avatar.column][avatar.row] = Tileset.FLOOR;
             avatar.column -= 1;
             world[avatar.column][avatar.row] = Tileset.AVATAR;
-            ter.renderFrame(world);
-
+            if (render) {
+                ter.renderFrame(world);
+                drawHUD();
+            }
         }
     }
     public void moveAvatarUp() {
@@ -167,7 +181,10 @@ public class Map {
             world[avatar.column][avatar.row] = Tileset.FLOOR;
             avatar.row += 1;
             world[avatar.column][avatar.row] = Tileset.AVATAR;
-            ter.renderFrame(world);
+            if (render) {
+                ter.renderFrame(world);
+                drawHUD();
+            }
         }
     }
     public void moveAvatarDown() {
@@ -175,27 +192,31 @@ public class Map {
             world[avatar.column][avatar.row] = Tileset.FLOOR;
             avatar.row -= 1;
             world[avatar.column][avatar.row] = Tileset.AVATAR;
-            ter.renderFrame(world);
-
+            if (render) {
+                ter.renderFrame(world);
+                drawHUD();
+            }
         }
     }
     // End of newly added work from Michael.
-    public int avatarLocX() {
-        return avatar.column;
-    }
 
-    public int avatarLocY() {
-        return avatar.row;
-    }
 
-    public TETile getTile(int x, int y) {
-        return world[x][y];
+    public String tileAt(int x, int y) {
+        return world[x][y].description();
     }
     public int getWidth() {
         return w;
     }
     public int getHeight() {
         return h;
+    }
+
+    private void drawHUD() {
+        StdDraw.setPenColor(Color.WHITE);
+        Font fontSmall = new Font("Monaco", Font.BOLD, 20);
+        StdDraw.setFont(fontSmall);
+        StdDraw.textLeft(0, h - 1, world[0][0].description());
+        StdDraw.show();
     }
 
     private int[] populate(int X, int Y, String D1, String D2, int D1L, int D2L) {
@@ -414,6 +435,10 @@ public class Map {
             return new int[] {0,0};
         }
         return new int[] {X,Y};
+    }
+
+    public static TETile[][] getWorld() {
+        return world;
     }
 }
 

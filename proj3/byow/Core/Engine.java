@@ -1,9 +1,7 @@
 package byow.Core;
 
 import byow.TileEngine.TETile;
-import byow.TileEngine.Tileset;
 import edu.princeton.cs.introcs.StdDraw;
-import org.eclipse.jetty.util.IO;
 
 import java.awt.*;
 import java.io.*;
@@ -15,21 +13,27 @@ public class Engine {
     public static final int HEIGHT = 35;
     private Game game;
     private String input;
-    private boolean gameStarted;
+    private String stringSeed;
     private long seed;
+    private boolean render;
+
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
      * including inputs from the main menu.
      */
-    public Engine() {
-        StdDraw.setCanvasSize(WIDTH * 16, HEIGHT * 16);
-        Font font = new Font("Monaco", Font.BOLD, 30);
-        StdDraw.setFont(font);
-        StdDraw.setXscale(0, WIDTH);
-        StdDraw.setYscale(0, HEIGHT);
-        StdDraw.clear(Color.BLACK);
-        StdDraw.enableDoubleBuffering();
-        StdDraw.setPenColor(Color.WHITE);
+    public Engine(boolean render) {
+        this.render = render;
+        if (render) {
+            StdDraw.setCanvasSize(WIDTH * 16, HEIGHT * 16); // starts Java visual
+            Font font = new Font("Monaco", Font.BOLD, 30);
+            StdDraw.setFont(font);
+            StdDraw.setXscale(0, WIDTH);
+            StdDraw.setYscale(0, HEIGHT);
+            StdDraw.clear(Color.BLACK);
+            StdDraw.enableDoubleBuffering();
+            StdDraw.setPenColor(Color.WHITE);
+        }
+        stringSeed = "";
     }
 
     public void interactWithKeyboard() {
@@ -46,15 +50,21 @@ public class Engine {
 
         Font fontLarge = new Font("Monaco", Font.BOLD, 30);
         StdDraw.setFont(fontLarge);
-        StdDraw.text(WIDTH / 2, HEIGHT/4*3, "CS61B: THE GAME");
+        StdDraw.text(WIDTH / 2, HEIGHT / 4 * 3, "CS61B: THE GAME");
         StdDraw.show();
 
         Font fontSmall = new Font("Monaco", Font.PLAIN, 15);
         StdDraw.setFont(fontSmall);
         StdDraw.text(WIDTH / 2, HEIGHT / 2, "New Game (N)");
-        if (hasSavedFile()) {
+
+        if (!hasSavedFile()) {
+            StdDraw.setPenColor(Color.GRAY);
+            StdDraw.text(WIDTH / 2, HEIGHT / 2 - 3, "Load Game (L) (No saved file yet!)");
+            StdDraw.setPenColor(Color.WHITE);
+        } else {
             StdDraw.text(WIDTH / 2, HEIGHT / 2 - 3, "Load Game (L)");
         }
+
         StdDraw.text(WIDTH / 2, HEIGHT / 2 - 6, "Quit (Q)");
         StdDraw.show();
 
@@ -70,7 +80,7 @@ public class Engine {
         switch (Character.toUpperCase(key)) {
             case 'N':
                 drawSeedInputMenu("");
-                createNewGame(true);
+                createGame(true);
                 break;
             case 'L':
                 loadPreviousGame();
@@ -81,12 +91,17 @@ public class Engine {
         }
     }
 
-    private void createNewGame(boolean render) {
+    private TETile[][] createGame(boolean render) {
         /** makes GUI game */
-        game = new Game(seed, render);
-        game.addInput("N");
-        game.startGame();
+        game = new Game(seed, render); // Creates GUI if render is true
+        if (render) {
+            game.addInput("N" + seed + "S");
+        } else {
+            game.addInput(input);
+        }
+        return game.startGame();
     }
+
 
     private void drawSeedInputMenu(String seed) {
         StdDraw.clear(Color.BLACK);
@@ -109,7 +124,6 @@ public class Engine {
             if (Character.toUpperCase(c) == 'S') {
                 StdDraw.clear(Color.BLACK);
                 StdDraw.show();
-                input+= seed + c;
                 this.seed = Long.parseLong(seed);
                 return;
             }
@@ -117,8 +131,6 @@ public class Engine {
             StdDraw.show();
         }
     }
-
-
 
 
     private void loadPreviousGame() {
@@ -129,8 +141,8 @@ public class Engine {
             if (file.exists()) {
                 Scanner scanner = new Scanner(file);
                 String input = scanner.nextLine();
-                TETile[][] map = interactWithInputString(input);
-                //game.loadMap(map);
+                interactWithInputString(input); // creates a game unrendered and returns TETiles
+                game.render(); // render and start game
             } else {
                 System.exit(0);
             }
@@ -145,76 +157,23 @@ public class Engine {
         return file.exists();
     }
 
-    /* private _____ createNewGame(String restOfInput) {
-        String seed = "" ;
-        String playerInput = "";
-        int index = 0;
-        while (input[index] is an int) {
-            seed += input[index];
-        }
-        for (int i = 0; i < input.length; i++) {
-            if (input[i].toUpperCase() == 'Q') {
-                if (input[i-1] == ':') {
-                    make txt file
-                    save input in it
-                }
-                quit(); //kill program
-            }
-            playerInput
-        }
-    *   generateWorld(Long.parseLong(seed),);
-    *   generateHUD();
-    *   startGame();
-    * } */
-
-    /* private ____ generateWorld(long seed) {
-     *   // does what testMain does to generate world randomly
-     *       // testMain should also generate an avatar and door
-     * }*/
-
-    /* private ____ generateHUD() {
-     *   // uses Std.draw and instance variables to create and update HUD
-     * } */
-
-    /*
-    private void startGame(String input) {
-        int index = 0;
-           while (!gameOver) {
-            drawFrame();
-            if (input[index] == ':' $$ input[index+1] == 'Q') {
-                quit();
-            }
-            if (input[index].toUppercase == 'W') {
-                moveUp();
-            if (input[index].toUppercase == 'A') {
-                moveLeft();
-           }
-           if (input[index].toUppercase == 'S') {
-                moveDown();
-           }
-           if (input[index].toUppercase == 'D') {
-                moveRight();
-           }
-    }
-    }
-
     /**
      * Method used for autograding and testing your code. The input string will be a series
      * of characters (for example, "n123sswwdasdassadwas", "n123sss:q", "lwww". The engine should
      * behave exactly as if the user typed these characters into the engine using
      * interactWithKeyboard.
-     *
+     * <p>
      * Recall that strings ending in ":q" should cause the game to quite save. For example,
      * if we do interactWithInputString("n123sss:q"), we expect the game to run the first
      * 7 commands (n123sss) and then quit and save. If we then do
      * interactWithInputString("l"), we should be back in the exact same state.
-     *
+     * <p>
      * In other words, running both of these:
-     *   - interactWithInputString("n123sss:q")
-     *   - interactWithInputString("lww")
-     *
+     * - interactWithInputString("n123sss:q")
+     * - interactWithInputString("lww")
+     * <p>
      * should yield the exact same world state as:
-     *   - interactWithInputString("n123sssww")
+     * - interactWithInputString("n123sssww")
      *
      * @param input the input string to feed to your program
      * @return the 2D TETile[][] representing the state of the world
@@ -232,82 +191,31 @@ public class Engine {
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
         // TODO: should NOT render tiles
-        for (int i = 0; i < input.length(); i++) {
-            switch (input.charAt(i)) {
-                case 'N':
-                    // creates a TETile world without rendering it.
-                    while (Character.toUpperCase(input.charAt(i)) != 'S'
-                            && Character.isDigit(input.charAt(i))) {
-                        seed += input.charAt(i);
-                    }
-                    createNewGame(false);
-                    break;
-                case 'L': //TODO: load saved game file
-
-            }
-        }
-
-        /*read input[0];
-        if L, loadPreviousGame();
-        if N, createNewGame();
-        */
-        return null;
-    }
-
-    /* private _____ createNewGame(String restOfInput) {
-        String seed = "" ;
-        String playerInput = "";
-        int index = 0;
-        while (input[index] is an int) {
-            seed += input[index];
-        }
-        for (int i = 0; i < input.length; i++) {
-            if (input[i].toUpperCase() == 'Q') {
-                if (input[i-1] == ':') {
-                    make txt file
-                    save input in it
+        this.input = input;
+        int i = 0;
+        if (Character.toUpperCase(input.charAt(i)) == 'N') {
+            // creates a TETile world without rendering it.
+                //TODO?
+                /* get seed first then create game*/
+                while (Character.toUpperCase(input.charAt(i + 1)) != 'S'
+                        && Character.isDigit(input.charAt(i + 1))) {
+                    stringSeed += input.charAt(i + 1);
+                    i++;
                 }
-                quit(); //kill program
+                seed = Long.parseLong(stringSeed);
+                return createGame(false);
+            } else {
+            if (hasSavedFile()) {
+                //TODO
+                try {
+                    File file = new File("saved_game.txt");
+                    Scanner scanner = new Scanner(file);
+                    return interactWithInputString(scanner.nextLine());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
-            playerInput
+            return null;
         }
-    *   generateWorld(Long.parseLong(seed),);
-    *   generateHUD();
-    *   startGame();
-    * } */
-
-    /* private ____ generateWorld(long seed) {
-    *   // does what testMain does to generate world randomly
-    *       // testMain should also generate an avatar and door
-    * }*/
-
-    /* private ____ generateHUD() {
-    *   // uses Std.draw and instance variables to create and update HUD
-    * } */
-
-    /*
-    private void startGame(String input) {
-        int index = 0;
-           while (!gameOver) {
-            drawFrame();
-            if (input[index] == ':' $$ input[index+1] == 'Q') {
-                quit();
-            }
-            if (input[index].toUppercase == 'W') {
-                moveUp();
-            if (input[index].toUppercase == 'A') {
-                moveLeft();
-           }
-           if (input[index].toUppercase == 'S') {
-                moveDown();
-           }
-           if (input[index].toUppercase == 'D') {
-                moveRight();
-           }
     }
-
-                            ANOTHER SOLUTION
-          read through user input, change coordinate of avatar before loading world,
-          then load world with new location.
-     */
 }

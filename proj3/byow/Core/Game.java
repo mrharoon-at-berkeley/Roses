@@ -2,6 +2,7 @@ package byow.Core;
 
 import byow.InputDemo.InputSource;
 import byow.InputDemo.KeyboardInputSource;
+import byow.InputDemo.StringInputDevice;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
 import edu.princeton.cs.introcs.StdDraw;
@@ -18,17 +19,23 @@ public class Game {
     private String input;
     private long seed;
     private boolean render;
+    private boolean gameStarted;
 
     public Game(long seed, boolean render) {
         /** This will create a new game */
         this.seed = seed;
+        this.render = render;
         input = "";
         map = new Map(seed, render);
+        gameStarted = true;
     }
 
-    public String getGameInput() {
-        return input;
+    public void render() {
+        map.render();
+        render = true;
+        startGame();
     }
+
     private void writeFile(File file) {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(file));
@@ -53,92 +60,111 @@ public class Game {
             e.printStackTrace();
         }
     }
-    public long getSeed() {
-        return seed;
-    }
-
-    public TETile getTile(int x, int y) {
-        return map.getTile(x, y);
-    }
-
-    public int getMapHeight() {
-        return map.getHeight();
-    }
-
-    public int getMapWidth() {
-        return map.getWidth();
-    }
-
-    public int avatarLocX() {
-        return map.avatarLocX();
-    }
-
-    public int avatarLocY() {
-        return map.avatarLocY();
-    }
     public void addInput(String s) {
         input += s;
     }
 
-    public void startGame() {
-        //TODO: When does game end?
-        InputSource inputSource = new KeyboardInputSource();
-        while (!gameOver) {
-            if (inputSource.possibleNextInput()) {
+
+    public TETile[][] startGame() {
+        //TODO?: When does game end?
+        InputSource inputSource;
+        if (render) {
+            inputSource = new KeyboardInputSource();
+            while (inputSource.possibleNextInput()) {
+                map.render();
+                StdDraw.setPenColor(Color.WHITE);
+                Font fontSmall = new Font("Monaco", Font.BOLD, 20);
+                StdDraw.setFont(fontSmall);
+                while (!StdDraw.isMousePressed()) { // this condition is just to test
+                    StdDraw.pause(100);
+                }
+//                } else {
+//                    StdDraw.textLeft(map.getWidth(), map.getHeight() - 1,
+//                            map.tileAt(0, 0));
+//                }
+                StdDraw.textLeft(map.getWidth(), map.getHeight() - 1,
+                        map.tileAt((int) StdDraw.mouseX(), (int) StdDraw.mouseY()));
+                StdDraw.line(0, 0, 40, 40);
+                StdDraw.show();
+                if (inputSource.possibleNextInput()) {
+                    char c = Character.toUpperCase(inputSource.getNextKey());
+                    switch (c) {
+                        case 'W':
+                            map.moveAvatarUp();
+                            input += 'W';
+                            break;
+                        case 'A':
+                            map.moveAvatarLeft();
+                            input += 'A';
+                            break;
+                        case 'S':
+                            map.moveAvatarDown();
+                            input += 'S';
+                            break;
+                        case 'D':
+                            map.moveAvatarRight();
+                            input += 'D';
+                            break;
+                        case 'Q':
+                            input += 'Q';
+                            System.exit(0);
+                        case ':':
+                            if (inputSource.possibleNextInput()) {
+                                char ch = Character.toUpperCase(inputSource.getNextKey());
+                                if (ch == 'Q') {
+                                    input += ":Q";
+                                    saveGame();
+                                }
+
+                                System.exit(0);
+                            }
+                    }
+                }
+            }
+        } else {
+            inputSource = new StringInputDevice(input);
+            while (inputSource.possibleNextInput()) {
                 char c = Character.toUpperCase(inputSource.getNextKey());
-                switch (c) {
+                switch (c) { // will it skip numbers?
                     case 'W':
                         map.moveAvatarUp();
-                        input += 'W';
                         break;
                     case 'A':
                         map.moveAvatarLeft();
-                        input += 'A';
                         break;
                     case 'S':
                         map.moveAvatarDown();
-                        input += 'S';
                         break;
                     case 'D':
                         map.moveAvatarRight();
-                        input += 'D';
                         break;
-                    case 'Q':
-                        input += 'Q';
-                        System.exit(0);
-                    case ':':
-                        if (inputSource.possibleNextInput()) {
-                            char ch = Character.toUpperCase(inputSource.getNextKey());
-                            if (ch == 'Q') {
-                                input += ":Q";
-                                saveGame();
-                            }
-
-                            System.exit(0);
-                        }
+//                    case 'Q':
+//                        System.exit(0);
+//                    case ':':
+//                        if (inputSource.possibleNextInput()) {
+//                            char ch = Character.toUpperCase(inputSource.getNextKey());
+//                            if (ch == 'Q') {
+//                                saveGame();
+//                            }
+//
+//                            System.exit(0);
+//                        }
                 }
             }
         }
+        return map.getWorld();
     }
 
 
+    private boolean mouseLocationNotDefault(int x, int y) {
+        return x != 0.0 || y != 0.0;
+    }
 
     private void drawHUD() {
-        /*
-        if (!gameOver) {
-            Font fontSmall = new Font("Monaco", Font.PLAIN, 15);
-            StdDraw.setFont(fontSmall);
-            StdDraw.textLeft(0.0, HEIGHT - 1, tileAtMouse());
-            StdDraw.textRight(width - 1, height - 1,
-                    ENCOURAGEMENT[this.rand.nextInt(ENCOURAGEMENT.length)]);
-            StdDraw.text(this.width / 2, height - 1, playerTurn ? "Type!" : "Watch!");
-
-        }
-    }
-    private Tileset tileAtMouse() {
-        return map.tileAt(StdDraw.mouseX(), StdDraw.mouseY());
-    }*/
-
-
+        StdDraw.setPenColor(Color.white);
+        Font fontSmall = new Font("Monaco", Font.PLAIN, 15);
+        StdDraw.setFont(fontSmall);
+        StdDraw.textLeft(0.0, map.getHeight() - 1, "hi");
+        StdDraw.show();
     }
 }
