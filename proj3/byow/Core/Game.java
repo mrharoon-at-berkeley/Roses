@@ -4,14 +4,15 @@ import byow.InputDemo.InputSource;
 import byow.InputDemo.KeyboardInputSource;
 import byow.InputDemo.StringInputDevice;
 import byow.TileEngine.TETile;
-import byow.TileEngine.Tileset;
-import edu.princeton.cs.introcs.StdDraw;
+import java.util.Date;
+import edu.princeton.cs.algs4.StdDraw;
 
 import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 public class Game {
     private boolean gameOver;
@@ -26,7 +27,7 @@ public class Game {
         this.seed = seed;
         this.render = render;
         input = "";
-        map = new Map(seed, render);
+        map = new Map(seed, render); // renders map
         gameStarted = true;
     }
 
@@ -72,36 +73,29 @@ public class Game {
             inputSource = new KeyboardInputSource();
             while (inputSource.possibleNextInput()) {
                 map.render();
-                StdDraw.setPenColor(Color.WHITE);
-                Font fontSmall = new Font("Monaco", Font.BOLD, 20);
-                StdDraw.setFont(fontSmall);
-                while (!StdDraw.isMousePressed()) { // this condition is just to test
-                    StdDraw.pause(100);
-                }
-//                } else {
-//                    StdDraw.textLeft(map.getWidth(), map.getHeight() - 1,
-//                            map.tileAt(0, 0));
-//                }
-                StdDraw.textLeft(map.getWidth(), map.getHeight() - 1,
-                        map.tileAt((int) StdDraw.mouseX(), (int) StdDraw.mouseY()));
-                StdDraw.line(0, 0, 40, 40);
-                StdDraw.show();
                 if (inputSource.possibleNextInput()) {
+                    while (!StdDraw.hasNextKeyTyped()) {
+                        showTileAtMouse();
+                    }
                     char c = Character.toUpperCase(inputSource.getNextKey());
                     switch (c) {
                         case 'W':
-                            map.moveAvatarUp();
+                                showTileAtMouse();
+                                map.moveAvatarUp();
                             input += 'W';
                             break;
                         case 'A':
+                            showTileAtMouse();
                             map.moveAvatarLeft();
                             input += 'A';
                             break;
                         case 'S':
+                                showTileAtMouse();
                             map.moveAvatarDown();
                             input += 'S';
                             break;
                         case 'D':
+                                showTileAtMouse();
                             map.moveAvatarRight();
                             input += 'D';
                             break;
@@ -153,6 +147,20 @@ public class Game {
             }
         }
         return map.getWorld();
+    }
+
+    private void showTileAtMouse() {
+        map.render();
+        StdDraw.setPenColor(Color.WHITE);
+        Font fontSmall = new Font("Monaco", Font.BOLD, 20);
+        StdDraw.setFont(fontSmall);
+        StdDraw.textLeft(0,map.getHeight()-2,
+                map.tileAt((int)StdDraw.mouseX(), (int)StdDraw.mouseY()));
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        Date date = new Date();
+        StdDraw.textRight(map.getWidth(), map.getHeight()-2,
+                formatter.format(date));
+        StdDraw.show();
     }
 
 

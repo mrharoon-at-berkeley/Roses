@@ -3,7 +3,7 @@ package byow.Core;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
-import edu.princeton.cs.introcs.StdDraw;
+import edu.princeton.cs.algs4.StdDraw;
 
 import java.awt.*;
 import java.util.Random;
@@ -32,7 +32,7 @@ public class Map {
         this.render = render;
         ter = new TERenderer();
 
-        ter.initialize(w, h);
+//        ter.initialize(w, h);
 
         //make evryting outside initially
         for (int x = 0; x < w; x += 1) {
@@ -130,7 +130,6 @@ public class Map {
 
     public void render() {
         ter.renderFrame(world);
-        drawHUD();
         render = true;
     }
 
@@ -161,7 +160,6 @@ public class Map {
             world[avatar.column][avatar.row] = Tileset.AVATAR;
             if (render) {
                 ter.renderFrame(world);
-                drawHUD();
             }
         }
     }
@@ -172,7 +170,6 @@ public class Map {
             world[avatar.column][avatar.row] = Tileset.AVATAR;
             if (render) {
                 ter.renderFrame(world);
-                drawHUD();
             }
         }
     }
@@ -183,7 +180,6 @@ public class Map {
             world[avatar.column][avatar.row] = Tileset.AVATAR;
             if (render) {
                 ter.renderFrame(world);
-                drawHUD();
             }
         }
     }
@@ -194,7 +190,6 @@ public class Map {
             world[avatar.column][avatar.row] = Tileset.AVATAR;
             if (render) {
                 ter.renderFrame(world);
-                drawHUD();
             }
         }
     }
@@ -209,14 +204,6 @@ public class Map {
     }
     public int getHeight() {
         return h;
-    }
-
-    private void drawHUD() {
-        StdDraw.setPenColor(Color.WHITE);
-        Font fontSmall = new Font("Monaco", Font.BOLD, 20);
-        StdDraw.setFont(fontSmall);
-        StdDraw.textLeft(0, h - 1, world[0][0].description());
-        StdDraw.show();
     }
 
     private int[] populate(int X, int Y, String D1, String D2, int D1L, int D2L) {
