@@ -76,10 +76,20 @@ public class Engine {
     }
 
     private void userMenuCommand(char key) {
+        if (
+                ((Character.toUpperCase(key) == 'L' && !hasSavedFile())
+                                || Character.toUpperCase(key) != 'L') &&
+                Character.toUpperCase(key) != 'N' &&
+                Character.toUpperCase(key) != 'Q') {
+            while (!StdDraw.hasNextKeyTyped()) {
+                StdDraw.pause(100);
+            }
+            userMenuCommand(StdDraw.nextKeyTyped());
+        }
         switch (Character.toUpperCase(key)) {
             case 'N':
                 drawSeedInputMenu("");
-                createGame(true);
+                createGame(true, true);
                 break;
             case 'L':
                 loadPreviousGame();
@@ -90,13 +100,18 @@ public class Engine {
         }
     }
 
-    private TETile[][] createGame(boolean render) {
+    private TETile[][] createGame(boolean render, boolean loadGUI) {
         /** makes GUI game */
         game = new Game(seed, render); // Creates GUI if render is true
         if (render) {
             game.addInput("N" + seed + "S");
         } else {
             game.addInput(input);
+            if (loadGUI) {
+                game.isLoadingForGui = true;
+            } else {
+                game.isLoadingForGui = false;
+            }
         }
         return game.startGame();
     }
@@ -119,15 +134,20 @@ public class Engine {
             StdDraw.pause(100);
         }
         if (StdDraw.hasNextKeyTyped()) {
-            char c = StdDraw.nextKeyTyped();
-            if (Character.toUpperCase(c) == 'S') {
+            char c = Character.toUpperCase(StdDraw.nextKeyTyped());
+            if (c == 'S') {
                 StdDraw.clear(Color.BLACK);
                 StdDraw.show();
                 this.seed = Long.parseLong(seed);
-                return;
+            } else if (Character.isDigit(c)) {
+                drawSeedInputMenu(seed + c);
+                StdDraw.show();
+            } else if (c == '\b') {
+                drawSeedInputMenu(seed.substring(0, seed.length()-1));
+            }else {
+                drawSeedInputMenu(seed);
+                StdDraw.show();
             }
-            drawSeedInputMenu(seed + c);
-            StdDraw.show();
         }
     }
 
@@ -202,14 +222,14 @@ public class Engine {
                     i++;
                 }
                 seed = Long.parseLong(stringSeed);
-                return createGame(false);
+                return createGame(false, false);
             } else {
             if (hasSavedFile()) {
                 //TODO
                 try {
                     File file = new File("saved_game.txt");
                     Scanner scanner = new Scanner(file);
-                    return interactWithInputString(scanner.nextLine());
+                    return interactWithInputString(scanner.nextLine() + input);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

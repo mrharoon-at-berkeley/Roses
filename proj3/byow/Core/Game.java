@@ -21,6 +21,7 @@ public class Game {
     private long seed;
     private boolean render;
     private boolean gameStarted;
+    public boolean isLoadingForGui;
 
     public Game(long seed, boolean render) {
         /** This will create a new game */
@@ -71,7 +72,7 @@ public class Game {
         InputSource inputSource;
         if (render) {
             inputSource = new KeyboardInputSource();
-            while (inputSource.possibleNextInput()) {
+            while (map.getNumberOfFlowers() != 0) {
                 map.render();
                 if (inputSource.possibleNextInput()) {
                     while (!StdDraw.hasNextKeyTyped()) {
@@ -80,8 +81,8 @@ public class Game {
                     char c = Character.toUpperCase(inputSource.getNextKey());
                     switch (c) {
                         case 'W':
-                                showTileAtMouse();
-                                map.moveAvatarUp();
+                            showTileAtMouse();
+                            map.moveAvatarUp();
                             input += 'W';
                             break;
                         case 'A':
@@ -115,11 +116,12 @@ public class Game {
                     }
                 }
             }
-        } else {
+            win();
+        } else { // bc string input, cannot work in real time
             inputSource = new StringInputDevice(input);
             while (inputSource.possibleNextInput()) {
                 char c = Character.toUpperCase(inputSource.getNextKey());
-                switch (c) { // will it skip numbers?
+                switch (c) {
                     case 'W':
                         map.moveAvatarUp();
                         break;
@@ -132,21 +134,37 @@ public class Game {
                     case 'D':
                         map.moveAvatarRight();
                         break;
-//                    case 'Q':
-//                        System.exit(0);
-//                    case ':':
-//                        if (inputSource.possibleNextInput()) {
-//                            char ch = Character.toUpperCase(inputSource.getNextKey());
-//                            if (ch == 'Q') {
-//                                saveGame();
-//                            }
-//
-//                            System.exit(0);
-//                        }
+                    case 'Q':
+                        if (isLoadingForGui) {
+                            System.exit(0);
+                        }
+                    case ':':
+                        if (isLoadingForGui) {
+                            if (inputSource.possibleNextInput()) {
+                                char ch = Character.toUpperCase(inputSource.getNextKey());
+                                if (ch == 'Q') {
+                                    saveGame();
+                                }
+
+                                System.exit(0);
+                            }
+                        }
                 }
             }
         }
         return map.getWorld();
+    }
+
+    private void win() {
+        StdDraw.clear(Color.BLACK);
+        StdDraw.setPenColor(Color.WHITE);
+        Font winningFont = new Font("Times New Roman", Font.BOLD, 40);
+        StdDraw.setFont(winningFont);
+        StdDraw.text(map.getWidth()/2, map.getHeight()/2,
+                "Congratulations! You beat this donkey of a game!");
+        StdDraw.show();
+        StdDraw.pause(1000);
+        System.exit(0);
     }
 
     private void showTileAtMouse() {
