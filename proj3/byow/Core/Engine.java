@@ -7,6 +7,8 @@ import java.awt.*;
 import java.io.*;
 import java.util.Scanner;
 
+//TODO: REMOVE UNNECESSARY CODE
+
 public class Engine {
     /* Feel free to change the width and height. */
     public static final int WIDTH = 70;

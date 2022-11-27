@@ -14,6 +14,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 
+//TODO: REMOVE UNNECESSARY CODE
+
+
 public class Game {
     private boolean gameOver;
     private Map map;
