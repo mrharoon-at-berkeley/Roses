@@ -194,12 +194,13 @@ public class Map {
             int randomH = RandomUtils.uniform(random, h-15);
             for (int i = randomW; i < randomW + 20; i++) {
                 for (int j = randomH; j < randomH + 15; j++) {
-                    cachedWorld[randomW][randomH] = Tileset.WALL;
+                    cachedWorld[i][j] = Tileset.WALL;
                 }
             }
+            cachedWorld[0][0] = Tileset.FLOOR;
             for (int i = randomW+1; i < randomW + 19; i++) {
                 for (int j = randomH+1; j < randomH + 14; j++) {
-                    cachedWorld[randomW][randomH] = Tileset.FLOOR;
+                    cachedWorld[i][j] = Tileset.FLOOR;
                 }
             }
             //swaps worlds to render (so going up into an open door loads a temporary new world)
