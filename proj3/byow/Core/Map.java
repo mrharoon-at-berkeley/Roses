@@ -199,10 +199,13 @@ public class Map {
             }
             for (int i = randomW+1; i < randomW + 19; i++) {
                 for (int j = randomH+1; j < randomH + 14; j++) {
-                    cachedWorld[randomW][randomH] = Tileset.WALL;
+                    cachedWorld[randomW][randomH] = Tileset.FLOOR;
                 }
             }
-            ter.renderFrame(cachedWorld);
+            //swaps worlds to render (so going up into an open door loads a temporary new world)
+            TETile[][] temp = activeWorld;
+            activeWorld = cachedWorld;
+            cachedWorld = temp;
         }
     }
     public void moveAvatarDown() {
