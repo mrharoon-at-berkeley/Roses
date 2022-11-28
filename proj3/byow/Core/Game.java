@@ -79,27 +79,27 @@ public class Game {
                 map.render();
                 if (inputSource.possibleNextInput()) {
                     while (!StdDraw.hasNextKeyTyped()) {
-                        showTileAtMouse();
+                        drawHUD();
                     }
                     char c = Character.toUpperCase(inputSource.getNextKey());
                     switch (c) {
                         case 'W':
-                            showTileAtMouse();
+                            drawHUD();
                             map.moveAvatarUp();
                             input += 'W';
                             break;
                         case 'A':
-                            showTileAtMouse();
+                            drawHUD();
                             map.moveAvatarLeft();
                             input += 'A';
                             break;
                         case 'S':
-                                showTileAtMouse();
+                                drawHUD();
                             map.moveAvatarDown();
                             input += 'S';
                             break;
                         case 'D':
-                                showTileAtMouse();
+                                drawHUD();
                             map.moveAvatarRight();
                             input += 'D';
                             break;
@@ -170,7 +170,7 @@ public class Game {
         System.exit(0);
     }
 
-    private void showTileAtMouse() {
+    private void drawHUD() {
         map.render();
         StdDraw.setPenColor(Color.WHITE);
         Font fontSmall = new Font("Monaco", Font.BOLD, 20);
@@ -181,19 +181,10 @@ public class Game {
         Date date = new Date();
         StdDraw.textRight(map.getWidth(), map.getHeight()-2,
                 formatter.format(date));
+        StdDraw.text(map.getWidth()/2, map.getHeight()-2,
+                "Number of Flowers to Collect: " + map.getNumberOfFlowers());
         StdDraw.show();
     }
 
 
-    private boolean mouseLocationNotDefault(int x, int y) {
-        return x != 0.0 || y != 0.0;
-    }
-
-    private void drawHUD() {
-        StdDraw.setPenColor(Color.white);
-        Font fontSmall = new Font("Monaco", Font.PLAIN, 15);
-        StdDraw.setFont(fontSmall);
-        StdDraw.textLeft(0.0, map.getHeight() - 1, "hi");
-        StdDraw.show();
-    }
 }

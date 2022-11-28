@@ -3,7 +3,9 @@ package byow.Core;
 import byow.TileEngine.TERenderer;
 import byow.TileEngine.TETile;
 import byow.TileEngine.Tileset;
+import edu.princeton.cs.algs4.StdDraw;
 
+import java.awt.*;
 import java.util.Random;
 //TODO: REMOVE UNNECESSARY CODE
 
@@ -300,6 +302,14 @@ public class Map {
                     } else {
                         i--;
                     }
+                }
+                if (render) {
+                    StdDraw.clear(Color.BLACK);
+                    Font font = new Font("Monaco", Font.BOLD, 30);
+                    StdDraw.setFont(font);
+                    StdDraw.text(w / 2, h / 2, "Collect the FLOWERS!");
+                    StdDraw.show();
+                    StdDraw.pause(5000);
                 }
                 //TODO: generate encounter
                 encounter = true;
