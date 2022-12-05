@@ -4,7 +4,6 @@ import byow.InputDemo.InputSource;
 import byow.InputDemo.KeyboardInputSource;
 import byow.InputDemo.StringInputDevice;
 import byow.TileEngine.TETile;
-import java.util.Date;
 import edu.princeton.cs.algs4.StdDraw;
 
 import java.awt.*;
@@ -13,26 +12,20 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-
-//TODO: REMOVE UNNECESSARY CODE
+import java.util.Date;
 
 
 public class Game {
-    private boolean gameOver;
-    private Map map;
-    private String input;
-    private long seed;
-    private boolean render;
-    private boolean gameStarted;
     public boolean isLoadingForGui;
+    private final Map map;
+    private String input;
+    private boolean render;
 
     public Game(long seed, boolean render) {
         /** This will create a new game */
-        this.seed = seed;
         this.render = render;
         input = "";
         map = new Map(seed, render); // renders map
-        gameStarted = true;
     }
 
     public void render() {
@@ -65,6 +58,7 @@ public class Game {
             e.printStackTrace();
         }
     }
+
     public void addInput(String s) {
         input += s;
     }
@@ -84,22 +78,22 @@ public class Game {
                     char c = Character.toUpperCase(inputSource.getNextKey());
                     switch (c) {
                         case 'W':
-                            drawHUD();
+//                            drawHUD();
                             map.moveAvatarUp();
                             input += 'W';
                             break;
                         case 'A':
-                            drawHUD();
+//                            drawHUD();
                             map.moveAvatarLeft();
                             input += 'A';
                             break;
                         case 'S':
-                                drawHUD();
+//                                drawHUD();
                             map.moveAvatarDown();
                             input += 'S';
                             break;
                         case 'D':
-                                drawHUD();
+//                                drawHUD();
                             map.moveAvatarRight();
                             input += 'D';
                             break;
@@ -155,7 +149,7 @@ public class Game {
                 }
             }
         }
-        return map.getWorld();
+        return Map.getWorld();
     }
 
     private void win() {
@@ -163,10 +157,10 @@ public class Game {
         StdDraw.setPenColor(Color.WHITE);
         Font winningFont = new Font("Times New Roman", Font.BOLD, 40);
         StdDraw.setFont(winningFont);
-        StdDraw.text(map.getWidth()/2, map.getHeight()/2,
+        StdDraw.text(map.getWidth() / 2, map.getHeight() / 2,
                 "Congratulations! You beat this donkey of a game!");
         StdDraw.show();
-        StdDraw.pause(1000);
+        StdDraw.pause(5000);
         System.exit(0);
     }
 
@@ -175,13 +169,18 @@ public class Game {
         StdDraw.setPenColor(Color.WHITE);
         Font fontSmall = new Font("Monaco", Font.BOLD, 20);
         StdDraw.setFont(fontSmall);
-        StdDraw.textLeft(0,map.getHeight()-2,
-                map.tileAt((int)StdDraw.mouseX(), (int)StdDraw.mouseY()));
+        int x = (int) StdDraw.mouseX();
+        int y = (int) StdDraw.mouseY();
+        if (y >= 35) {
+            y = 34;
+        }
+        StdDraw.textLeft(0, map.getHeight() - 2,
+                map.tileAt(x, y));
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         Date date = new Date();
-        StdDraw.textRight(map.getWidth(), map.getHeight()-2,
+        StdDraw.textRight(map.getWidth(), map.getHeight() - 2,
                 formatter.format(date));
-        StdDraw.text(map.getWidth()/2, map.getHeight()-2,
+        StdDraw.text(map.getWidth() / 2, map.getHeight() - 2,
                 "Number of Flowers to Collect: " + map.getNumberOfFlowers());
         StdDraw.show();
     }

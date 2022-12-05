@@ -4,7 +4,8 @@ import byow.TileEngine.TETile;
 import edu.princeton.cs.algs4.StdDraw;
 
 import java.awt.*;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.Scanner;
 
 //TODO: REMOVE UNNECESSARY CODE
@@ -17,7 +18,7 @@ public class Engine {
     private String input;
     private String stringSeed;
     private long seed;
-    private boolean render;
+    private final boolean render;
 
     /**
      * Method used for exploring a fresh world. This method should handle all inputs,
@@ -80,9 +81,9 @@ public class Engine {
     private void userMenuCommand(char key) {
         if (
                 ((Character.toUpperCase(key) == 'L' && !hasSavedFile())
-                                || Character.toUpperCase(key) != 'L') &&
-                Character.toUpperCase(key) != 'N' &&
-                Character.toUpperCase(key) != 'Q') {
+                        || Character.toUpperCase(key) != 'L') &&
+                        Character.toUpperCase(key) != 'N' &&
+                        Character.toUpperCase(key) != 'Q') {
             while (!StdDraw.hasNextKeyTyped()) {
                 StdDraw.pause(100);
             }
@@ -95,7 +96,6 @@ public class Engine {
                 break;
             case 'L':
                 loadPreviousGame();
-                // after
                 break;
             case 'Q':
                 System.exit(0);
@@ -109,11 +109,7 @@ public class Engine {
             game.addInput("N" + seed + "S");
         } else {
             game.addInput(input);
-            if (loadGUI) {
-                game.isLoadingForGui = true;
-            } else {
-                game.isLoadingForGui = false;
-            }
+            game.isLoadingForGui = loadGUI;
         }
         return game.startGame();
     }
@@ -145,8 +141,8 @@ public class Engine {
                 drawSeedInputMenu(seed + c);
                 StdDraw.show();
             } else if (c == '\b') {
-                drawSeedInputMenu(seed.substring(0, seed.length()-1));
-            }else {
+                drawSeedInputMenu(seed.substring(0, seed.length() - 1));
+            } else {
                 drawSeedInputMenu(seed);
                 StdDraw.show();
             }
@@ -155,7 +151,6 @@ public class Engine {
 
 
     private void loadPreviousGame() {
-        //TODO: use interactWithStringInput to save time
         try {
             File file = new File("saved_game.txt");
 
@@ -173,7 +168,6 @@ public class Engine {
     }
 
     private boolean hasSavedFile() {
-        //TODO: use interactWithStringInput to save time
         File file = new File("saved_game.txt");
         return file.exists();
     }
@@ -204,30 +198,25 @@ public class Engine {
          * line argument, describing how they want to generate
          * the random world and what exploration they wish to complete.
          */
-        // TODO: Fill out this method so that it run the engine using the input
         // passed in as an argument, and return a 2D tile representation of the
         // world that would have been drawn if the same inputs had been given
         // to interactWithKeyboard().
         //
         // See proj3.byow.InputDemo for a demo of how you can make a nice clean interface
         // that works for many different input types.
-        // TODO: should NOT render tiles
         this.input = input;
         int i = 0;
         if (Character.toUpperCase(input.charAt(i)) == 'N') {
             // creates a TETile world without rendering it.
-                //TODO?
-                /* get seed first then create game*/
-                while (Character.toUpperCase(input.charAt(i + 1)) != 'S'
-                        && Character.isDigit(input.charAt(i + 1))) {
-                    stringSeed += input.charAt(i + 1);
-                    i++;
-                }
-                seed = Long.parseLong(stringSeed);
-                return createGame(false, false);
-            } else {
+            while (Character.toUpperCase(input.charAt(i + 1)) != 'S'
+                    && Character.isDigit(input.charAt(i + 1))) {
+                stringSeed += input.charAt(i + 1);
+                i++;
+            }
+            seed = Long.parseLong(stringSeed);
+            return createGame(false, false);
+        } else {
             if (hasSavedFile()) {
-                //TODO
                 try {
                     File file = new File("saved_game.txt");
                     Scanner scanner = new Scanner(file);
