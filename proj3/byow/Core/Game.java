@@ -158,7 +158,7 @@ public class Game {
         Font winningFont = new Font("Times New Roman", Font.BOLD, 40);
         StdDraw.setFont(winningFont);
         StdDraw.text(map.getWidth() / 2, map.getHeight() / 2,
-                "Congratulations! You beat this donkey of a game!");
+                "Congratulations! You beat this game!");
         StdDraw.show();
         StdDraw.pause(5000);
         System.exit(0);
