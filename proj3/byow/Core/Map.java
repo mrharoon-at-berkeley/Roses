@@ -18,13 +18,13 @@ public class Map {
     public static final int w = 70; //j a decent width size
     public static final int h = 35; //j a decent height size
     static final String[] directions = new String[]{"up", "down", "left", "right"}; //directions
-    private static final TETile[][] mainWorld = new TETile[w][h];
-    private final Random random;
-    private final long seed;
-    private final TETile[][] encounterWorld = new TETile[w][h];
+    private static TETile[][] mainWorld = new TETile[w][h];
+    private Random random;
+    private long seed;
+    private TETile[][] encounterWorld = new TETile[w][h];
     private Avatar mainAvatar;
     private Avatar encounterAvatar;
-    private final TERenderer ter;
+    private TERenderer ter;
     private int numberOfDoors;
     private int numberOfFlowers;
     private boolean encounter;
@@ -78,17 +78,14 @@ public class Map {
         int randomD1L = RandomUtils.uniform(random, 3);
         int randomD2L = RandomUtils.uniform(random, 5);
 
-        System.out.println("X: " + randomX + " Y: " + randomY + " D1: " + randomD1 + " D2: " + randomD2 + " D1L: " + randomD1L + " D2L: " + randomD2L);
 
         int[] firstpop = populate(randomX, randomY, randomD1, randomD2, randomD1L, randomD2L);
 
         int nowX = firstpop[0];
 
-        System.out.println(nowX);
 
         int nowY = firstpop[1];
 
-        System.out.println(nowY);
 
         for (int i = 0; i < 560; i++) {
             String nowD1 = directions[RandomUtils.uniform(random, 4)];
@@ -97,15 +94,11 @@ public class Map {
             int nowD1L = RandomUtils.uniform(random, 3);
             int nowD2L = RandomUtils.uniform(random, 5);
 
-            System.out.println("X: " + nowX + " Y: " + nowY + " D1: " + nowD1 + " D2: " + nowD2 + " D1L: " + nowD1L + " D2L: " + nowD2L);
-
             int[] secpop = populate(nowX, nowY, nowD1, nowD2, nowD1L, nowD2L);
 
             nowX = secpop[0];
-            System.out.println(nowX);
 
             nowY = secpop[1];
-            System.out.println(nowY);
         }
 
         for (int x = 1; x < w - 1; x++) {
@@ -187,14 +180,12 @@ public class Map {
                 mainWorld[X--][Y] = Tileset.FLOOR;
             }
             changed = true;
-            System.out.println("rebounded a high X");
             X = (w - 3 - 4);
         } else if (X < 4) {
             for (int i = 0; i < 4; i++) {
                 mainWorld[X++][Y] = Tileset.FLOOR;
             }
             changed = true;
-            System.out.println("rebounded a low X");
             X = (3 + 4);
         }
         if (Y > h - 4) {
@@ -202,14 +193,12 @@ public class Map {
                 mainWorld[X][Y--] = Tileset.FLOOR;
             }
             changed = true;
-            System.out.println("rebounded a high Y");
             Y = (h - 3 - 4);
         } else if (Y < 4) {
             for (int i = 0; i < 4; i++) {
                 mainWorld[X][++Y] = Tileset.FLOOR;
             }
             changed = true;
-            System.out.println("rebounded a low Y");
             Y = (3 + 4);
         }
         if (!changed) {
@@ -408,7 +397,6 @@ public class Map {
                     }
                     mainWorld[++X][Y] = Tileset.FLOOR;
 
-                    System.out.println("D1 Right-- X position:" + X);
                 }
                 break;
             }
@@ -420,7 +408,6 @@ public class Map {
                     }
                     mainWorld[--X][Y] = Tileset.FLOOR;
 
-                    System.out.println("D1 Left-- X position:" + X);
                 }
                 break;
             }
@@ -432,7 +419,6 @@ public class Map {
                     }
                     mainWorld[X][++Y] = Tileset.FLOOR;
 
-                    System.out.println("D1 Up-- Y position:" + Y);
                 }
                 break;
             }
@@ -444,7 +430,6 @@ public class Map {
                     }
                     mainWorld[X][--Y] = Tileset.FLOOR;
 
-                    System.out.println("D1 Down-- Y position:" + Y);
                 }
                 break;
             }
@@ -458,7 +443,6 @@ public class Map {
                     }
                     mainWorld[++X][Y] = Tileset.FLOOR;
 
-                    System.out.println("D2 Right-- X position:" + X);
                 }
                 if (initialY < Y && RandomUtils.uniform(random, 4) == 1) {
                     for (int x = X; x >= initialX; x--) {
@@ -466,7 +450,6 @@ public class Map {
                             mainWorld[x][y] = Tileset.FLOOR;
                         }
                     }
-                    System.out.println("real estate1");
                 }
                 if (initialY > Y && RandomUtils.uniform(random, 4) == 1) {
                     for (int x = X; x >= initialX; x--) {
@@ -474,7 +457,6 @@ public class Map {
                             mainWorld[x][y] = Tileset.FLOOR;
                         }
                     }
-                    System.out.println("real estate2");
 
                 }
                 break;
@@ -487,7 +469,6 @@ public class Map {
                     }
                     mainWorld[--X][Y] = Tileset.FLOOR;
 
-                    System.out.println("D2 Left-- X position:" + X);
                 }
                 if (initialY < Y && RandomUtils.uniform(random, 4) == 1) {
                     for (int x = X; x <= initialX; x++) {
@@ -495,7 +476,6 @@ public class Map {
                             mainWorld[x][y] = Tileset.FLOOR;
                         }
                     }
-                    System.out.println("real estate3");
 
                 }
                 if (initialY > Y && RandomUtils.uniform(random, 4) == 1) {
@@ -504,7 +484,6 @@ public class Map {
                             mainWorld[x][y] = Tileset.FLOOR;
                         }
                     }
-                    System.out.println("real estate4");
 
                 }
                 break;
@@ -517,7 +496,6 @@ public class Map {
                     }
                     mainWorld[X][++Y] = Tileset.FLOOR;
 
-                    System.out.println("D2 Up-- Y position:" + Y);
                 }
                 if (initialX < X && RandomUtils.uniform(random, 4) == 1) {
                     for (int y = Y; y >= initialY; y--) {
@@ -525,7 +503,6 @@ public class Map {
                             mainWorld[x][y] = Tileset.FLOOR;
                         }
                     }
-                    System.out.println("real estate5");
 
                 }
                 if (initialX > X && RandomUtils.uniform(random, 4) == 1) {
@@ -534,7 +511,6 @@ public class Map {
                             mainWorld[x][y] = Tileset.FLOOR;
                         }
                     }
-                    System.out.println("real estate6");
 
                 }
                 break;
@@ -546,7 +522,6 @@ public class Map {
                     }
                     mainWorld[X][--Y] = Tileset.FLOOR;
 
-                    System.out.println("D2 Down-- Y position:" + Y);
                 }
                 if (initialX < X && RandomUtils.uniform(random, 4) == 1) {
                     for (int y = Y; y >= initialY; y--) {
@@ -554,7 +529,6 @@ public class Map {
                             mainWorld[x][y] = Tileset.FLOOR;
                         }
                     }
-                    System.out.println("real estate7");
 
                 }
                 if (initialX > X && RandomUtils.uniform(random, 4) == 1) {
@@ -563,7 +537,6 @@ public class Map {
                             mainWorld[x][y] = Tileset.FLOOR;
                         }
                     }
-                    System.out.println("real estate8");
                 }
             }
             break;
